@@ -1,4 +1,4 @@
-EPRI's OpenDSS is software, written in Pascal, that is an electric power Distribution System Simulator (DSS).  Docker is a software virtualization program that is designed to run software in *containers*.  This project provides the few additional files to allow one to both compile and run OpenDSS in a Fedora-based Docker image.
+EPRI's [OpenDSS](https://sourceforge.net/projects/electricdss/) is software, written in Pascal, that is an electric power Distribution System Simulator (DSS).  [Docker](https://www.docker.com/) is a software virtualization program that is designed to run software in *containers*.  This project provides the few additional files to allow one to both compile and run OpenDSS in a Fedora-based Docker image.
 
 ## Prerequisites
 Because it is well documented elsewhere, this document will not describe the process for installing and running Docker.  
