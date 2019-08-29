@@ -1,4 +1,4 @@
-work/opendsscmd : electric-dss/CMD_Lazz/CMD/opendsscmd 
+opendsscmd : electric-dss/CMD_Lazz/CMD/opendsscmd 
 	cp $^ $@
 
 electric-dss/CMD_Lazz/units: 
