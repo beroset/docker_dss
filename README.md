@@ -33,7 +33,7 @@ docker run --rm -v "${SHARED_DIR}":/mnt/host-dir:z -t -i beroset/opendss "/mnt/h
 This uses the Docker image as an executable and passes a file to OpenDSS.  If the project needs multiple files, all of them should be placed in the shared directory.
 
 ## Example
-The [`StevensonPflow-3ph.dss`](http://svn.code.sf.net/p/electricdss/code/trunk/Distrib/Examples/Stevenson/StevensonPflow-3ph.dss) file creates a number of output files which contain solutions to various aspects of the circuit.  To 
+The [`StevensonPflow-3ph.dss`](http://svn.code.sf.net/p/electricdss/code/trunk/Distrib/Examples/Stevenson/StevensonPflow-3ph.dss) file creates a number of output files which contain solutions to various aspects of the circuit.  
 
 If you've successfully built OpenDSS in a Docker image as described above, you can then try this simple test by running `example.sh` from the same directory as this code and documentation exists.  That is, you'd simply write:
 
