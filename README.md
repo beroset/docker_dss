@@ -38,7 +38,7 @@ The [`StevensonPflow-3ph.dss`](http://svn.code.sf.net/p/electricdss/code/trunk/D
 If you've successfully built OpenDSS in a Docker image as described above, you can then try this simple test by running `example.sh` from the same directory as this code and documentation exists.  That is, you'd simply write:
 
     ./create.sh
-    ./example.sh
+    ./example.sh StevensonPflow-3ph.dss
 
 The result will be three new files in the `shared` directory:
 
