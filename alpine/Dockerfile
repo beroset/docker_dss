@@ -8,7 +8,8 @@ ENV FPC_VERSION="3.0.4" \
 WORKDIR /tmp/
 COPY install_dependencies.sh install_dependencies.sh
 RUN mkdir -p epri && \
-    ./install_dependencies.sh
+    apk update && \
+    apk add cmake make g++ git subversion 
 RUN wget "ftp://ftp.hu.freepascal.org/pub/fpc/dist/${FPC_VERSION}/${FPC_ARCH}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" -O fpc.tar && \
     tar xf "fpc.tar" && \
     cd "fpc-${FPC_VERSION}.${FPC_ARCH}" && \
