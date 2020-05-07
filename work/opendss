@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 /root/opendsscmd "$1"
 tar -czf result.tar.gz -C /tmp/OpenDSS .
 if [ -d /mnt/host-dir ]
