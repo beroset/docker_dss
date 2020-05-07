@@ -1,0 +1,33 @@
+FROM alpine:3.11 AS builder
+
+LABEL maintainer="Ed Beroset <beroset@ieee.org>"
+
+ENV FPC_VERSION="3.0.4" \
+    FPC_ARCH="x86_64-linux"
+
+WORKDIR /tmp/
+COPY install_dependencies.sh install_dependencies.sh
+RUN mkdir -p epri && \
+    ./install_dependencies.sh
+RUN wget "ftp://ftp.hu.freepascal.org/pub/fpc/dist/${FPC_VERSION}/${FPC_ARCH}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" -O fpc.tar && \
+    tar xf "fpc.tar" && \
+    cd "fpc-${FPC_VERSION}.${FPC_ARCH}" && \
+    # Workaround musl vs glibc entrypoint for `fpcmkcfg`
+    mkdir /lib64 && \
+    ln -s /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
+    echo -e '/usr\nN\nN\nN\n' | sh ./install.sh && \
+    rm -r "/lib64" 
+RUN svn checkout https://svn.code.sf.net/p/klusolve/code/ KLUSolve
+RUN git clone https://github.com/pnnl/linenoise-ng.git
+RUN export LC_CTYPE=en_US.UTF8 && svn checkout https://svn.code.sf.net/p/electricdss/code/trunk/Version7/Source epri/electric-dss
+
+COPY Makefile Makefile
+RUN make
+
+FROM alpine:3.11
+WORKDIR /root/
+RUN mkdir -p /root/Documents/OpenDSSCmd
+RUN apk add libstdc++
+COPY --from=builder /tmp/opendsscmd .
+COPY --from=builder /tmp/linenoise-ng/build/liblinenoise.so /lib/liblinenoise.so
+ENTRYPOINT ["/root/opendsscmd"]

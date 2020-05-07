@@ -1,7 +1,7 @@
 LIBGCC_FILE := $(shell gcc -print-libgcc-file-name)
 STATIC_LIBDIR := $(dir $(LIBGCC_FILE))
-#LOADER:=/lib/ld-musl-x86_64.so.1
-LOADER:=/lib64/ld-linux-x86-64.so.2
+LOADER:=/lib/ld-musl-x86_64.so.1
+#LOADER:=/lib64/ld-linux-x86-64.so.2
 
 opendsscmd : epri/electric-dss/CMD/test/opendsscmd 
 	cp $^ $@
