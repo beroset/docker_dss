@@ -13,6 +13,14 @@ To test if docker is running we can use
 On Fedora and similar, the configuration file is `/usr/lib/systemd/system/docker.service`.
 
 ## Building OpenDSS in a container image
+### The easy way
+The simplest way to build a container directly using Podman is to create a repository directly from git:
+
+    podman build git://github.com/beroset/docker_dss.git -t beroset/opendss
+
+This creates a Debian-based image by temporarily cloning the repository.
+
+### The hard way
 The build instructions used within this project are inspired by [these build instructions](https://sourceforge.net/p/electricdss/discussion/861976/thread/b32b74a2/5f93/attachment/EPRI_Build_OpenDSS_Linux.pdf) but on a container image. 
 
 It is possible build for container images based on many different distributions.  To build a container with the OpenDSS software, run the `create.sh` `bash` script.  Note that this build mechanism requires a recent version of Podman (or Docker) to support [multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/) and an internet connection.  This starts with a Debian software container, adds required build software and then downloads and install the FreePascal compiler, `fpc` and then the OpenDSS software (including the `klusolve` library) is created.  With the magic of multistage build, we can then create a new, minimal container that includes just the freshly built OpenDSS software.  This is why little effort has been expended on making the build image small, since it is essentially thrown away once the required executable has been created.
@@ -80,7 +88,7 @@ The first file is, of course, the input file and the other five are the output f
 ## Interactive session in a container
 Another way to run the software is to start in a `sh` shell.  A simple way to do this is:
 
-    docker run --rm -itv "$(pwd)/shared":/mnt/host-dir:z --entrypoint=/bin/sh beroset/opendss -i
+    podman run --rm -itv "$(pwd)/shared":/mnt/host-dir:z --entrypoint=/bin/sh beroset/opendss -i
 
 As before, the `shared` subdirectory under the host's (your *real* computer's) current working directory is mapped to `/mnt/host-dir` in the virtual Debian machine.  The result is that you may `cd /mnt/host-dir` to get to the shared directory and run OpenDSS (the actual command is `opendsscmd`) or whatever other software the shell would normally provide.  Note that because this is a command-line version only, it does **not** support OpenDSS's GUI, nor the `Plot` command.
 
