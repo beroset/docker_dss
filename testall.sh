@@ -19,6 +19,7 @@
 #    [OK] opensuse
 #    [OK] ubuntu
 # 
+CONTAINER_ENGINE="podman"
 DISTROLIST="alpine arch centos debian fedora opensuse ubuntu"
 OK="\e[0;32mOK\e[m"
 BAD="\e[0;31mFailed!\e[m"
@@ -27,7 +28,7 @@ build_one() (
     local distro="${1}"
     TIMEFORMAT='%R'
     printf $"Build time for %s: " "${distro}" 
-    $(time { podman build -f=work/Dockerfile.$distro -t beroset/opendss$distro work >/dev/null 2>&1; }  2>&1 )
+    $(time { ${CONTAINER_ENGINE} build -f=work/Dockerfile.$distro -t beroset/opendss$distro work >/dev/null 2>&1; }  2>&1 )
 )
 
 test_one() (
@@ -39,13 +40,47 @@ test_one() (
         rm -f "${SHARED_DIR}"*
     fi
     cp StevensonPflow-3ph.dss "${SHARED_DIR}"
-    podman run --rm -v "${SHARED_DIR}":/mnt/host-dir:z "beroset/opendss/${distro}" "/mnt/host-dir/StevensonPflow-3ph.dss" 1>/dev/null 2>&1
+    ${CONTAINER_ENGINE} run --rm -v "${SHARED_DIR}":/mnt/host-dir:z "beroset/opendss/${distro}" "/mnt/host-dir/StevensonPflow-3ph.dss" 1>/dev/null 2>&1
     if sha512sum -c checksums --status ; then
         echo -e "[${OK}] ${distro}"
     else
         echo -e "[${BAD}] ${distro}"
     fi
 )
+
+while test $# -gt 0; do 
+    case "$1" in 
+    --docker)
+        echo 'Testing using Docker as the container engine'
+        CONTAINER_ENGINE="docker"
+        shift
+        ;;
+    --podman)
+        echo 'Testing using Podman as the container engine'
+        CONTAINER_ENGINE="podman"
+        shift
+        ;;
+     --h | --he | --hel | --help)
+        echo $"Usage: ldd [OPTION]... FILE...
+        --help              print this help and exit
+        --podman            use Podman as the container engine
+        --docker            use Docker as the container engine
+"
+        exit 0
+        ;;
+      --)    # stop option processing
+        shift; break
+        ;;
+      -*)
+        echo >&2 'testall.sh' $"unrecognized option" "\`$1'"
+        echo >&2 $"Try \`testall.sh --help' for more information."
+        exit 1
+        ;;
+      *)
+        break
+        ;;
+    esac
+done
 
 for distro in ${DISTROLIST}; do
     build_one "${distro}"
