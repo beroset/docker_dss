@@ -6,7 +6,6 @@ ENV FPC_VERSION="3.0.4" \
     FPC_ARCH="x86_64-linux"
 
 WORKDIR /tmp/
-COPY install_dependencies.sh install_dependencies.sh
 RUN mkdir -p epri && \
     apk update && \
     apk add cmake make g++ git subversion 
