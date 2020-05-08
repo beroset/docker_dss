@@ -61,7 +61,7 @@ while test $# -gt 0; do
         shift
         ;;
      --h | --he | --hel | --help)
-        echo $"Usage: ldd [OPTION]... FILE...
+        echo $"Usage: testall.sh [OPTION]... FILE...
         --help              print this help and exit
         --podman            use Podman as the container engine
         --docker            use Docker as the container engine
