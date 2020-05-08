@@ -93,3 +93,13 @@ Another way to run the software is to start in a `sh` shell.  A simple way to do
 As before, the `shared` subdirectory under the host's (your *real* computer's) current working directory is mapped to `/mnt/host-dir` in the virtual Debian machine.  The result is that you may `cd /mnt/host-dir` to get to the shared directory and run OpenDSS (the actual command is `opendsscmd`) or whatever other software the shell would normally provide.  Note that because this is a command-line version only, it does **not** support OpenDSS's GUI, nor the `Plot` command.
 
 For convenience, this is also put into a shell script `tryme.sh`.
+
+## Testing
+An overall test suite has been included within the project.  It is in the bash script `testall.sh`.  With a single command, all containers can be built and sanity-tested.  Be aware, however, that this requires an internet connection and may take considerable time - on a 3.4GHz i7 with gigabit fiber internet connection, the full test suite takes over 36 minutes to complete.
+
+    Usage: testall.sh [OPTION]
+            --help              print this help and exit
+            --podman            use Podman as the container engine
+            --docker            use Docker as the container engine
+
+As shown above, the `testall.sh` program takes a single option to specify which container engine is used.  If no options are specified, Podman is used by default.

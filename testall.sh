@@ -28,7 +28,7 @@ build_one() (
     local distro="${1}"
     TIMEFORMAT='%R'
     printf $"Build time for %s: " "${distro}" 
-    $(time { ${CONTAINER_ENGINE} build -f=work/Dockerfile.$distro -t beroset/opendss$distro work >/dev/null 2>&1; }  2>&1 )
+    $(time { ${CONTAINER_ENGINE} build -f=work/Dockerfile.$distro -t beroset/opendss/$distro work >/dev/null 2>&1; }  2>&1 )
 )
 
 test_one() (
@@ -61,7 +61,7 @@ while test $# -gt 0; do
         shift
         ;;
      --h | --he | --hel | --help)
-        echo $"Usage: testall.sh [OPTION]... FILE...
+        echo $"Usage: testall.sh [OPTION]
         --help              print this help and exit
         --podman            use Podman as the container engine
         --docker            use Docker as the container engine
