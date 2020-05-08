@@ -7,6 +7,8 @@ ENV FPC_VERSION="3.0.4" \
     LOADER="/lib/ld-musl-x86_64.so.1"
 
 WORKDIR /tmp/
+ENV TZ=America/New_York
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p epri && \
     apk update && \
     apk add cmake make g++ git subversion 

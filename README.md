@@ -24,13 +24,13 @@ The code currently supports Fedora, Debian, Ubuntu, Arch, CentOS, OpenSUSE and A
 
 |base   | image size (MB) | build command | notes                 |
 | ----- | ---------- | ------------- | --------------------- |
-|Fedora | 212 | podman build -f=work/Dockerfile.fedora work | no issues |
 |Alpine | 13.8 | podman build -f=work/Dockerfile.alpine work | see note below |
-|Debian | 77.1 | podman build -f=work/Dockerfile.debian work | no issues |
-|Ubuntu | 79.9 | podman build -f=work/Dockerfile.ubuntu work | build requires input for timezone |
 |Arch   | 428 | podman build -f=work/Dockerfile.arch work | no issues |
 |CentOS | 215 | podman build -f=work/Dockerfile.centos work | no issues |
+|Debian | 77.1 | podman build -f=work/Dockerfile.debian work | no issues |
+|Fedora | 212 | podman build -f=work/Dockerfile.fedora work | no issues |
 |openSUSE | 111 | podman build -f=work/Dockerfile.opensuse work | no issues |
+|Ubuntu | 79.9 | podman build -f=work/Dockerfile.ubuntu work | no issues |
 
 ### Notes on Alpine version
 The Alpine distribution appears to work, in that it produces the correct results in all testing so far but it produces a series of error messages that occur as the program is ending, but apparently after all output has been written.  The error is:

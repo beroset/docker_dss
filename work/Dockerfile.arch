@@ -3,6 +3,8 @@ FROM archlinux:20200505 AS builder
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
 WORKDIR /tmp/
+ENV TZ=America/New_York
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p epri
 RUN pacman --noconfirm -Syu && \
         pacman --noconfirm -S svn git make cmake gcc fpc

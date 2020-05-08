@@ -3,6 +3,8 @@ FROM debian:buster AS builder
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
 WORKDIR /tmp/
+ENV TZ=America/New_York
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p epri
 RUN apt-get -y update && \
     apt-get install -y subversion git make cmake g++ fpc

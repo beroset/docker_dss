@@ -3,6 +3,8 @@ FROM opensuse/leap:15 AS builder
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
 WORKDIR /tmp/
+ENV TZ=America/New_York
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p epri
 RUN zypper --non-interactive refresh && \
     zypper --non-interactive install -y gcc gcc-c++ fpc subversion make git cmake

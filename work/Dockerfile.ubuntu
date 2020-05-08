@@ -3,7 +3,9 @@ FROM ubuntu:groovy AS builder
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
 WORKDIR /tmp/
-RUN mkdir -p epri
+ENV TZ=America/New_York
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN mkdir -p epri 
 RUN apt-get -y update && \
     apt-get install -y subversion git make cmake g++ fpc
 RUN git clone https://github.com/pnnl/linenoise-ng.git
