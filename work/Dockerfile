@@ -17,7 +17,7 @@ RUN make
 
 FROM fedora:30
 WORKDIR /root/
+RUN mkdir -p /root/Documents/OpenDSSCmd
 COPY --from=builder /tmp/opendsscmd .
 COPY --from=builder /tmp/linenoise-ng/build/liblinenoise.so /lib64
-COPY opendss opendss
-ENTRYPOINT ["/bin/sh", "/root/opendss"]
+ENTRYPOINT ["/root/opendsscmd"]
