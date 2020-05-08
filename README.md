@@ -1,6 +1,9 @@
-EPRI's [OpenDSS](https://sourceforge.net/projects/electricdss/) is software, written in Pascal, that is an electric power Distribution System Simulator (DSS).  [Docker](https://www.docker.com/) is a software virtualization program that is designed to run software in *containers*.  This project provides the few additional files to allow one to both compile and run OpenDSS in an Fedora-based container image.  Note that the files are configured to use Docker, but [Podman](https://podman.io/) can also easily be used.
+EPRI's [OpenDSS](https://sourceforge.net/projects/electricdss/) is software, written in Pascal, that is an electric power Distribution System Simulator (DSS).  [Docker](https://www.docker.com/) is a software virtualization program that is designed to run software in *containers*.  This project provides the few additional files to allow one to both compile and run OpenDSS in an Fedora-based container image.  Note that the files are configured to use [Podman](https://podman.io/) but Docker can also easily be used.  
 
 ## Prerequisites
+### Using Podman
+Podman is a daemonless container engine and can easily be used instead of docker.  Because it does not require any special privileges, this project uses Podman, but the syntax of the Podman commands is essentially identical to Docker's so either can be used.
+
 ### Using Docker
 Because it is well documented elsewhere, this document will not describe the process for installing and running Docker.  
 To test if docker is running we can use
@@ -9,16 +12,34 @@ To test if docker is running we can use
 
 On Fedora and similar, the configuration file is `/usr/lib/systemd/system/docker.service`.
 
-### Using Podman
-Podman is a daemonless container engine and can easily be used instead of docker.  The easiest way to do this is to simply put `alias docker=podman` and run the rest of the instructions as written.
-
-
 ## Building OpenDSS in a container image
 The build instructions used within this project are inspired by [these build instructions](https://sourceforge.net/p/electricdss/discussion/861976/thread/b32b74a2/5f93/attachment/EPRI_Build_OpenDSS_Linux.pdf) but on a container image. 
 
-It is likely possible to build for Ubuntu, Debian and Fedora from a single script, only making minor adjustments in the script to account for differences in package dependencies and in base configuration, but this version only builds and uses an Fedora Linux distribution. To build a container with the OpenDSS software, run the `create.sh` `bash` script.  Note that this build mechanism requires a recent version of Docker (or Podman) to support [multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/) and an internet connection.  This starts with an Fedora software container, adds required build software and then downloads and builds the FreePascal compiler, `fpc` and then the OpenDSS software (including the `klusolve` library) is created.  With the magic of multistage build, we can then create a new, minimal container that includes just the freshly built OpenDSS software.  This is why little effort has been expended on making the build image small, since it is essentially thrown away once the required executable has been created.
+It is possible build for container images based on many different distributions.  To build a container with the OpenDSS software, run the `create.sh` `bash` script.  Note that this build mechanism requires a recent version of Podman (or Docker) to support [multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/) and an internet connection.  This starts with a Debian software container, adds required build software and then downloads and install the FreePascal compiler, `fpc` and then the OpenDSS software (including the `klusolve` library) is created.  With the magic of multistage build, we can then create a new, minimal container that includes just the freshly built OpenDSS software.  This is why little effort has been expended on making the build image small, since it is essentially thrown away once the required executable has been created.
 
-If everything goes successfully, the result will be a `beroset/opendss` container image.  Running `docker images` should verify that the `beroset/opendss` image has indeed been created.
+If everything goes successfully, the result will be a `beroset/opendss` container image.  Running `podman images` should verify that the `beroset/opendss` image has indeed been created.
+
+## Different distributions
+The code currently supports Fedora, Debian, Ubuntu, Arch, CentOS, OpenSUSE and Alpine distribution containers, although there are some problems with the Alpine distribution.
+
+|base   | image size (MB) | build command | notes                 |
+| ----- | ---------- | ------------- | --------------------- |
+|Fedora | 212 | podman build -f=work/Dockerfile.fedora work | no issues |
+|Alpine | 13.8 | podman build -f=work/Dockerfile.alpine work | see note below |
+|Debian | 77.1 | podman build -f=work/Dockerfile.debian work | no issues |
+|Ubuntu | 79.9 | podman build -f=work/Dockerfile.ubuntu work | build requires input for timezone |
+|Arch   | 428 | podman build -f=work/Dockerfile.arch work | no issues |
+|CentOS | 215 | podman build -f=work/Dockerfile.centos work | no issues |
+|openSUSE | 111 | podman build -f=work/Dockerfile.opensuse work | no issues |
+
+### Notes on Alpine version
+The Alpine distribution appears to work, in that it produces the correct results in all testing so far but it produces a series of error messages that occur as the program is ending, but apparently after all output has been written.  The error is:
+
+    An unhandled exception occurred at $00007FEB4F9F6B40:
+    EAccessViolation: 
+      $00007FEB4F9F6B40
+
+The difference is probably due to some interaction between the code generated by the Pascal compiler and the specific version of the C standard library, [`musl`](https://musl.libc.org/), used in Alpine.
 
 ## Using OpenDSS in a container image
 To run OpenDSS in a container image requires only the previously created `beroset/opendss` image.  Because OpenDSS takes files as input and (often) creates files as output, we need to share a *volume* with the container to allow this, since ordinarily, the container image has no interaction with the host system's storage.  To do this, we can use a simple `bash` script:
@@ -32,7 +53,7 @@ then
     mkdir "${SHARED_DIR}"
 fi
 cp "$1" "${SHARED_DIR}"
-docker run --rm -v "${SHARED_DIR}":/mnt/host-dir:z -t -i beroset/opendss "/mnt/host-dir/$1"
+podman run --rm -itv "${SHARED_DIR}":/mnt/host-dir:z beroset/opendss "/mnt/host-dir/$1"
 ```
 
 This uses the container image as an executable and passes a file to OpenDSS.  If the project needs multiple files, all of them should be placed in the shared directory.
@@ -45,17 +66,22 @@ If you've successfully built OpenDSS in a container image as described above, yo
     ./create.sh
     ./example.sh StevensonPflow-3ph.dss
 
-The result will be three new files in the `shared` directory:
+The result will be six files in the `shared` directory:
 
-    opendss.ini
-    result.tar.gz
-    StevensonPflow-3ph.dss
+    StevensonPflow-3ph.dss        
+    Stevenson_Power_elem_MVA.txt  
+    Stevenson_VLN_Node.Txt
+    Stevenson_Power_seq_MVA.txt
+    Stevenson_NodeMismatch.Txt  
+    Stevenson_Convergence.TXT   
 
-The `opendss.ini` file contains user preferences and history for the OpenDSS software, however none of them are particularly useful for the container version.
+The first file is, of course, the input file and the other five are the output files which contain the requested calculations.
 
 ## Interactive session in a container
 Another way to run the software is to start in a `sh` shell.  A simple way to do this is:
 
     docker run --rm -itv "$(pwd)/shared":/mnt/host-dir:z --entrypoint=/bin/sh beroset/opendss -i
 
-As before, the `shared` subdirectory under the host's (your *real* computer's) current working directory is mapped to `/mnt/host-dir` in the virtual Fedora machine.  The result is that you may `cd /mnt/host-dir` to get to the shared directory and run OpenDSS (the actual command is `opendsscmd`) or whatever other software the shell would normally provide.  Note that because this is a command-line version only, it does **not** support OpenDSS's GUI, nor the `Plot` command.
+As before, the `shared` subdirectory under the host's (your *real* computer's) current working directory is mapped to `/mnt/host-dir` in the virtual Debian machine.  The result is that you may `cd /mnt/host-dir` to get to the shared directory and run OpenDSS (the actual command is `opendsscmd`) or whatever other software the shell would normally provide.  Note that because this is a command-line version only, it does **not** support OpenDSS's GUI, nor the `Plot` command.
+
+For convenience, this is also put into a shell script `tryme.sh`.

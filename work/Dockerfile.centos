@@ -1,0 +1,31 @@
+FROM centos:7 AS builder
+
+LABEL maintainer="Ed Beroset <beroset@ieee.org>"
+
+ENV FPC_VERSION="3.0.4" \
+    FPC_ARCH="x86_64-linux"
+
+WORKDIR /tmp/
+RUN mkdir -p epri
+RUN yum -y install epel-release && \
+    yum install -y gcc gcc-c++ libcxx-static fpc svn make git cmake3 && \
+    ln -s /bin/cmake3 /bin/cmake
+RUN curl "ftp://ftp.hu.freepascal.org/pub/fpc/dist/${FPC_VERSION}/${FPC_ARCH}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" -o fpc.tar && \
+    tar xf "fpc.tar" && \
+    cd "fpc-${FPC_VERSION}.${FPC_ARCH}" && \
+    echo -e '/usr\nN\nN\nN\n' | sh ./install.sh 
+
+RUN git clone https://github.com/pnnl/linenoise-ng.git
+RUN svn checkout https://svn.code.sf.net/p/klusolve/code/ KLUSolve
+RUN svn checkout https://svn.code.sf.net/p/electricdss/code/trunk/Version7/Source epri/electric-dss
+
+WORKDIR /tmp/
+COPY Makefile Makefile
+RUN make
+
+FROM centos:7
+WORKDIR /root/
+RUN mkdir -p /root/Documents/OpenDSSCmd
+COPY --from=builder /tmp/opendsscmd .
+COPY --from=builder /tmp/linenoise-ng/build/liblinenoise.so /lib64/
+ENTRYPOINT ["/root/opendsscmd"]

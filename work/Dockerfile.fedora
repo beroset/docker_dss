@@ -1,0 +1,22 @@
+FROM fedora:32 AS builder
+
+LABEL maintainer="Ed Beroset <beroset@ieee.org>"
+
+WORKDIR /tmp/
+RUN mkdir -p epri
+RUN dnf update -y && \
+    dnf install -y gcc gcc-c++ libcxx-static fpc svn make git cmake
+RUN git clone https://github.com/pnnl/linenoise-ng.git
+RUN svn checkout https://svn.code.sf.net/p/klusolve/code/ KLUSolve
+RUN svn checkout https://svn.code.sf.net/p/electricdss/code/trunk/Version7/Source epri/electric-dss
+
+WORKDIR /tmp/
+COPY Makefile Makefile
+RUN make
+
+FROM fedora:32
+WORKDIR /root/
+RUN mkdir -p /root/Documents/OpenDSSCmd
+COPY --from=builder /tmp/opendsscmd .
+COPY --from=builder /tmp/linenoise-ng/build/liblinenoise.so /lib64/
+ENTRYPOINT ["/root/opendsscmd"]

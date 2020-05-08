@@ -1,0 +1,22 @@
+FROM ubuntu:groovy AS builder
+
+LABEL maintainer="Ed Beroset <beroset@ieee.org>"
+
+WORKDIR /tmp/
+RUN mkdir -p epri
+RUN apt-get -y update && \
+    apt-get install -y subversion git make cmake g++ fpc
+RUN git clone https://github.com/pnnl/linenoise-ng.git
+RUN svn checkout https://svn.code.sf.net/p/klusolve/code/ KLUSolve
+RUN svn checkout https://svn.code.sf.net/p/electricdss/code/trunk/Version7/Source epri/electric-dss
+
+WORKDIR /tmp/
+COPY Makefile Makefile
+RUN make
+
+FROM ubuntu:groovy
+WORKDIR /root/
+RUN mkdir -p /root/Documents/OpenDSSCmd
+COPY --from=builder /tmp/opendsscmd .
+COPY --from=builder /tmp/linenoise-ng/build/liblinenoise.so /lib/x86_64-linux-gnu/
+ENTRYPOINT ["/root/opendsscmd"]

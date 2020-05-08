@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t beroset/opendss work
+podman build -f=work/Dockerfile.debian -t beroset/opendss work

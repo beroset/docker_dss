@@ -3,7 +3,8 @@ FROM alpine:3.11 AS builder
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
 ENV FPC_VERSION="3.0.4" \
-    FPC_ARCH="x86_64-linux"
+    FPC_ARCH="x86_64-linux" \
+    LOADER="/lib/ld-musl-x86_64.so.1"
 
 WORKDIR /tmp/
 RUN mkdir -p epri && \
