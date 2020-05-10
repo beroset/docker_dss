@@ -12,7 +12,10 @@ RUN git clone https://github.com/pnnl/linenoise-ng.git
 RUN svn checkout https://svn.code.sf.net/p/klusolve/code/ KLUSolve
 RUN svn checkout https://svn.code.sf.net/p/electricdss/code/trunk/Version7/Source epri/electric-dss
 
-WORKDIR /tmp/
+COPY remove_obsolete_agent_calls.diff .
+RUN cd epri/electric-dss && \
+    svn patch --non-interactive /tmp/remove_obsolete_agent_calls.diff
+
 COPY Makefile Makefile
 RUN make
 
