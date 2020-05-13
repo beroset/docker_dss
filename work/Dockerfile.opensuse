@@ -22,6 +22,6 @@ RUN make
 FROM opensuse/leap:15
 WORKDIR /root/
 RUN mkdir -p /root/Documents/OpenDSSCmd
-COPY --from=builder /tmp/opendsscmd .
+COPY --from=builder /tmp/opendsscmd /bin/opendsscmd
 COPY --from=builder /tmp/linenoise-ng/build/liblinenoise.so /lib64/
-ENTRYPOINT ["/root/opendsscmd"]
+ENTRYPOINT ["/bin/opendsscmd"]

@@ -40,7 +40,7 @@ test_one() (
         rm -f "${SHARED_DIR}"*
     fi
     cp StevensonPflow-3ph.dss "${SHARED_DIR}"
-    ${CONTAINER_ENGINE} run --rm -v "${SHARED_DIR}":/mnt/host-dir:z "beroset/opendss/${distro}" "/mnt/host-dir/StevensonPflow-3ph.dss" 1>/dev/null 2>&1
+    ${CONTAINER_ENGINE} run --rm -v "${SHARED_DIR}":/mnt/host:z "beroset/opendss/${distro}" "/mnt/host/StevensonPflow-3ph.dss" 1>/dev/null 2>&1
     if sha512sum -c checksums --status ; then
         echo -e "[${OK}] ${distro}"
     else

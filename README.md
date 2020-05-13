@@ -61,7 +61,7 @@ then
     mkdir "${SHARED_DIR}"
 fi
 cp "$1" "${SHARED_DIR}"
-podman run --rm -itv "${SHARED_DIR}":/mnt/host-dir:z beroset/opendss "/mnt/host-dir/$1"
+podman run --rm -itv "${SHARED_DIR}":/mnt/host:z beroset/opendss "/mnt/host/$1"
 ```
 
 This uses the container image as an executable and passes a file to OpenDSS.  If the project needs multiple files, all of them should be placed in the shared directory.
@@ -88,9 +88,9 @@ The first file is, of course, the input file and the other five are the output f
 ## Interactive session in a container
 Another way to run the software is to start in a `sh` shell.  A simple way to do this is:
 
-    podman run --rm -itv "$(pwd)/shared":/mnt/host-dir:z --entrypoint=/bin/sh beroset/opendss -i
+    podman run --rm -itv "$(pwd)/shared":/mnt/host:z --entrypoint=/bin/sh beroset/opendss -i
 
-As before, the `shared` subdirectory under the host's (your *real* computer's) current working directory is mapped to `/mnt/host-dir` in the virtual Debian machine.  The result is that you may `cd /mnt/host-dir` to get to the shared directory and run OpenDSS (the actual command is `opendsscmd`) or whatever other software the shell would normally provide.  Note that because this is a command-line version only, it does **not** support OpenDSS's GUI, nor the `Plot` command.
+As before, the `shared` subdirectory under the host's (your *real* computer's) current working directory is mapped to `/mnt/host` in the virtual Debian machine.  The result is that you may `cd /mnt/host` to get to the shared directory and run OpenDSS (the actual command is `opendsscmd`) or whatever other software the shell would normally provide.  Note that because this is a command-line version only, it does **not** support OpenDSS's GUI, nor the `Plot` command.
 
 For convenience, this is also put into a shell script `tryme.sh`.
 

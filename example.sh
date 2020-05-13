@@ -5,4 +5,4 @@ then
     mkdir "${SHARED_DIR}"
 fi
 cp "$1" "${SHARED_DIR}"
-podman run --rm -itv "${SHARED_DIR}":/mnt/host-dir:z beroset/opendss "/mnt/host-dir/$1"
+podman run --rm -itv "${SHARED_DIR}":/mnt/host:z beroset/opendss "/mnt/host/$1"

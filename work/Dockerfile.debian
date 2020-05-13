@@ -22,6 +22,6 @@ RUN make
 FROM debian:buster-slim
 WORKDIR /root/
 RUN mkdir -p /root/Documents/OpenDSSCmd
-COPY --from=builder /tmp/opendsscmd .
+COPY --from=builder /tmp/opendsscmd /bin/opendsscmd
 COPY --from=builder /tmp/linenoise-ng/build/liblinenoise.so /lib/x86_64-linux-gnu/
-ENTRYPOINT ["/root/opendsscmd"]
+ENTRYPOINT ["/bin/opendsscmd"]

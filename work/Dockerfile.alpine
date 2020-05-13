@@ -35,6 +35,6 @@ FROM alpine:3.11
 WORKDIR /root/
 RUN mkdir -p /root/Documents/OpenDSSCmd
 RUN apk add libstdc++
-COPY --from=builder /tmp/opendsscmd .
+COPY --from=builder /tmp/opendsscmd /bin/opendsscmd
 COPY --from=builder /tmp/linenoise-ng/build/liblinenoise.so /lib/liblinenoise.so
-ENTRYPOINT ["/root/opendsscmd"]
+ENTRYPOINT ["/bin/opendsscmd"]
