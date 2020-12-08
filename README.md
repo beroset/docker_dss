@@ -28,7 +28,7 @@ It is possible build for container images based on many different distributions.
 If everything goes successfully, the result will be a `beroset/opendss` container image.  Running `podman images` should verify that the `beroset/opendss` image has indeed been created.
 
 ## Different distributions
-The code currently supports Fedora, Debian, Ubuntu, Arch, CentOS, OpenSUSE and Alpine distribution containers, although there are some problems with the Alpine distribution.
+The code currently supports Fedora, Debian, Ubuntu, Arch, CentOS, OpenSUSE and Alpine distribution containers.
 
 |base   | image size (MB) | build command | notes                 |
 | ----- | ---------- | ------------- | --------------------- |
