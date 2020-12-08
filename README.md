@@ -32,7 +32,7 @@ The code currently supports Fedora, Debian, Ubuntu, Arch, CentOS, OpenSUSE and A
 
 |base   | image size (MB) | build command | notes                 |
 | ----- | ---------- | ------------- | --------------------- |
-|Alpine | 14 | podman build -f=work/Dockerfile.alpine work | no issues |
+|Alpine | 12.3 | podman build -f=work/Dockerfile.alpine work | no issues |
 |Arch   | 427 | podman build -f=work/Dockerfile.arch work | no issues |
 |CentOS | 214 | podman build -f=work/Dockerfile.centos work | no issues |
 |Debian | 86.8 | podman build -f=work/Dockerfile.debian work | no issues |
