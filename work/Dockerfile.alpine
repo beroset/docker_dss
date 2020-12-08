@@ -1,25 +1,20 @@
-FROM alpine:3.11 AS builder
+FROM alpine:3.12 AS builder
 
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
-ENV FPC_VERSION="3.0.4" \
-    FPC_ARCH="x86_64-linux" \
-    LOADER="/lib/ld-musl-x86_64.so.1"
+ENV FPC_VERSION="3.2.0" \
+    FPC_ARCH="x86_64-linux"
 
 WORKDIR /tmp/
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p epri && \
     apk update && \
-    apk add cmake make g++ git subversion 
-RUN wget "ftp://ftp.hu.freepascal.org/pub/fpc/dist/${FPC_VERSION}/${FPC_ARCH}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" -O fpc.tar && \
+    apk add cmake make g++ git subversion libc6-compat
+RUN wget "ftp://ftp.hu.freepascal.org/pub/fpc/dist/${FPC_VERSION}/${FPC_ARCH}/fpc-${FPC_VERSION}-${FPC_ARCH}.tar" -O fpc.tar && \
     tar xf "fpc.tar" && \
-    cd "fpc-${FPC_VERSION}.${FPC_ARCH}" && \
-    # Workaround musl vs glibc entrypoint for `fpcmkcfg`
-    mkdir /lib64 && \
-    ln -s /lib/ld-musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2 && \
-    echo -e '/usr\nN\nN\nN\n' | sh ./install.sh && \
-    rm -r "/lib64" 
+    cd "fpc-${FPC_VERSION}-${FPC_ARCH}" && \
+    echo -e '/usr\nN\nN\nN\n' | sh ./install.sh 
 RUN svn checkout https://svn.code.sf.net/p/klusolve/code/ KLUSolve
 RUN git clone https://github.com/pnnl/linenoise-ng.git
 RUN export LC_CTYPE=en_US.UTF8 && svn checkout https://svn.code.sf.net/p/electricdss/code/trunk/Version7/Source epri/electric-dss
@@ -31,10 +26,10 @@ RUN cd epri/electric-dss && \
 COPY Makefile Makefile
 RUN make
 
-FROM alpine:3.11
+FROM alpine:3.12
 WORKDIR /root/
 RUN mkdir -p /root/Documents/OpenDSSCmd
-RUN apk add libstdc++
+RUN apk add libc6-compat libstdc++
 COPY --from=builder /tmp/opendsscmd /bin/opendsscmd
 COPY --from=builder /tmp/linenoise-ng/build/liblinenoise.so /lib/liblinenoise.so
 ENTRYPOINT ["/bin/opendsscmd"]

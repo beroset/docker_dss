@@ -1,4 +1,4 @@
-FROM opensuse/leap:15 AS builder
+FROM opensuse/leap:15.2 AS builder
 
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
@@ -19,7 +19,7 @@ RUN cd epri/electric-dss && \
 COPY Makefile Makefile
 RUN make
 
-FROM opensuse/leap:15
+FROM opensuse/leap:15.2
 WORKDIR /root/
 RUN mkdir -p /root/Documents/OpenDSSCmd
 COPY --from=builder /tmp/opendsscmd /bin/opendsscmd

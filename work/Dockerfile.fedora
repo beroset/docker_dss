@@ -1,4 +1,4 @@
-FROM fedora:32 AS builder
+FROM fedora:33 AS builder
 
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
@@ -19,7 +19,7 @@ RUN cd epri/electric-dss && \
 COPY Makefile Makefile
 RUN make
 
-FROM fedora:32
+FROM fedora:33
 WORKDIR /root/
 RUN mkdir -p /root/Documents/OpenDSSCmd
 COPY --from=builder /tmp/opendsscmd /bin/opendsscmd

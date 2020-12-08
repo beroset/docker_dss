@@ -1,19 +1,8 @@
 Index: CMD/fncs.pas
 ===================================================================
---- CMD/fncs.pas	(revision 2863)
+--- CMD/fncs.pas	(revision 2960)
 +++ CMD/fncs.pas	(working copy)
-@@ -63,10 +63,6 @@
-     fncs_initialize: procedure;FNCS_CALL;
-     // Connect to broker and parse inline configuration.
-     fncs_initialize_config: procedure (configuration:Pchar);FNCS_CALL;
--    // Connect to broker and parse config file for Transactive agents.
--    fncs_agentRegister: procedure;FNCS_CALL;
--    // Connect to broker and parse inline configuration for transactive agents.
--    fncs_agentRegisterConfig: procedure (configuration:Pchar);FNCS_CALL;
-     // Check whether simulator is configured and connected to broker.
-     fncs_is_initialized: function:longint;FNCS_CALL;
-     // Request the next time step to process.
-@@ -75,8 +71,6 @@
+@@ -72,8 +72,6 @@
      fncs_publish: procedure (key:Pchar; value:Pchar);FNCS_CALL;
      // Publish value anonymously using the given key.
      fncs_publish_anon: procedure (key:Pchar; value:Pchar);FNCS_CALL;
@@ -22,7 +11,7 @@ Index: CMD/fncs.pas
      // Publish value using the given key, adding from:to into the key.
      fncs_route: procedure (source:Pchar; target:Pchar; key:Pchar; value:Pchar);FNCS_CALL;
      // Tell broker of a fatal client error.
-@@ -89,10 +83,6 @@
+@@ -86,10 +84,6 @@
      fncs_get_events_size: function:size_t;FNCS_CALL;
      // Get the keys for all values that were updated during the last time_request.
      fncs_get_events: function:ppchar;FNCS_CALL;
@@ -33,7 +22,7 @@ Index: CMD/fncs.pas
      // Get a value from the cache with the given key. Will hard fault if key is not found.
      fncs_get_value: function (key:Pchar):pchar;FNCS_CALL;
      // Get the number of values from the cache with the given key.
-@@ -99,14 +89,10 @@
+@@ -96,14 +90,10 @@
      fncs_get_values_size: function (key:Pchar):size_t;FNCS_CALL;
      // Get an array of values from the cache with the given key. Will return an array of size 1 if only a single value exists.
      fncs_get_values: function (key:Pchar):ppchar;FNCS_CALL;
@@ -48,16 +37,16 @@ Index: CMD/fncs.pas
      // Return the name of the simulator.
      fncs_get_name: function:pchar;FNCS_CALL;
      // Return a unique numeric ID for the simulator.
-@@ -115,8 +101,6 @@
+@@ -112,8 +102,6 @@
      fncs_get_simulator_count: function:longint;FNCS_CALL;
      // Run-time API version detection.
      fncs_get_version: procedure (major:Plongint; minor:Plongint; patch:Plongint);FNCS_CALL;
 -    // Convenience wrapper around libc free.
 -    fncs_free: procedure (ptr:pointer);FNCS_CALL;
- 
-     function find_fncs_function (name: String): Pointer;
- 
-@@ -802,13 +786,10 @@
+     // faster versions for Pascal interface
+     fncs_count_events: function:size_t;FNCS_CALL;
+     fncs_count_values: function (key:Pchar):size_t;FNCS_CALL;
+@@ -765,13 +753,10 @@
      FuncError := False;
      @fncs_initialize := find_fncs_function ('fncs_initialize');
      if not FuncError then @fncs_initialize_config := find_fncs_function ('fncs_initialize_config');
@@ -71,7 +60,7 @@ Index: CMD/fncs.pas
      if not FuncError then @fncs_route := find_fncs_function ('fncs_route');
      if not FuncError then @fncs_die := find_fncs_function ('fncs_die');
      if not FuncError then @fncs_finalize := find_fncs_function ('fncs_finalize');
-@@ -815,20 +796,15 @@
+@@ -778,20 +763,15 @@
      if not FuncError then @fncs_update_time_delta := find_fncs_function ('fncs_update_time_delta');
      if not FuncError then @fncs_get_events_size := find_fncs_function ('fncs_get_events_size');
      if not FuncError then @fncs_get_events := find_fncs_function ('fncs_get_events');
@@ -89,6 +78,6 @@ Index: CMD/fncs.pas
      if not FuncError then @fncs_get_simulator_count := find_fncs_function ('fncs_get_simulator_count');
      if not FuncError then @fncs_get_version := find_fncs_function ('fncs_get_version');
 -    if not FuncError then @fncs_free := find_fncs_function ('_fncs_free');
-     if FuncError then begin
-       UnloadLibrary(FlibHandle);
-       FLibHandle := DynLibs.NilHandle;
+     if not FuncError then @fncs_count_events := find_fncs_function ('fncs_count_events');
+     if not FuncError then @fncs_count_values := find_fncs_function ('fncs_count_values');
+     if not FuncError then @fncs_next_event := find_fncs_function ('fncs_next_event');

@@ -1,4 +1,4 @@
-FROM ubuntu:groovy AS builder
+FROM ubuntu:focal AS builder
 
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
@@ -19,7 +19,7 @@ RUN cd epri/electric-dss && \
 COPY Makefile Makefile
 RUN make
 
-FROM ubuntu:groovy
+FROM ubuntu:focal
 WORKDIR /root/
 RUN mkdir -p /root/Documents/OpenDSSCmd
 COPY --from=builder /tmp/opendsscmd /bin/opendsscmd

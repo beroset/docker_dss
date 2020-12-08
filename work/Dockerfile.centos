@@ -1,8 +1,8 @@
-FROM centos:7 AS builder
+FROM centos:8 AS builder
 
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
-ENV FPC_VERSION="3.0.4" \
+ENV FPC_VERSION="3.2.0" \
     FPC_ARCH="x86_64-linux"
 
 WORKDIR /tmp/
@@ -12,9 +12,9 @@ RUN mkdir -p epri
 RUN yum -y install epel-release && \
     yum install -y gcc gcc-c++ libcxx-static fpc svn make git cmake3 && \
     ln -s /bin/cmake3 /bin/cmake
-RUN curl "ftp://ftp.hu.freepascal.org/pub/fpc/dist/${FPC_VERSION}/${FPC_ARCH}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" -o fpc.tar && \
+RUN curl "ftp://ftp.hu.freepascal.org/pub/fpc/dist/${FPC_VERSION}/${FPC_ARCH}/fpc-${FPC_VERSION}-${FPC_ARCH}.tar" -o fpc.tar && \
     tar xf "fpc.tar" && \
-    cd "fpc-${FPC_VERSION}.${FPC_ARCH}" && \
+    cd "fpc-${FPC_VERSION}-${FPC_ARCH}" && \
     echo -e '/usr\nN\nN\nN\n' | sh ./install.sh 
 
 RUN git clone https://github.com/pnnl/linenoise-ng.git
@@ -28,7 +28,7 @@ RUN cd epri/electric-dss && \
 COPY Makefile Makefile
 RUN make
 
-FROM centos:7
+FROM centos:8
 WORKDIR /root/
 RUN mkdir -p /root/Documents/OpenDSSCmd
 COPY --from=builder /tmp/opendsscmd /bin/opendsscmd
