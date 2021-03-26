@@ -7,7 +7,19 @@ ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p epri 
 RUN apt-get -y update && \
-    apt-get install -y subversion git make cmake g++ fpc
+    apt-get install -y subversion git make g++ fpc wget libssl-dev
+# Install cmake=3.19.7 from source bc ubuntu package repo does not have version>=3.18
+# Install requires wget and libssl-dev
+RUN version=3.19 && \
+    build=7 && \
+    mkdir ~/temp && \
+    cd ~/temp && \
+    wget https://cmake.org/files/v$version/cmake-$version.$build.tar.gz && \
+    tar -xzvf cmake-$version.$build.tar.gz && \
+    cd cmake-$version.$build/ && \
+    ./bootstrap && \
+    make -j$(nproc) && \
+    make install
 RUN git clone https://github.com/pnnl/linenoise-ng.git
 RUN svn checkout https://svn.code.sf.net/p/klusolve/code/ KLUSolve
 RUN svn checkout https://svn.code.sf.net/p/electricdss/code/trunk/Version7/Source epri/electric-dss
