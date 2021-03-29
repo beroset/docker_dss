@@ -20,15 +20,17 @@
 #    [OK] ubuntu
 # 
 CONTAINER_ENGINE="podman"
+BUILD_OPTS=
 DISTROLIST="alpine arch centos debian fedora opensuse ubuntu"
 OK="\e[0;32mOK\e[m"
 BAD="\e[0;31mFailed!\e[m"
+LOGFILE="/dev/null"
 
 build_one() (
     local distro="${1}"
     TIMEFORMAT='%R'
     printf $"Build time for %s: " "${distro}" 
-    $(time { ${CONTAINER_ENGINE} build -f=work/Dockerfile.$distro -t beroset/opendss/$distro work >/dev/null 2>&1; }  2>&1 )
+    $(time ${CONTAINER_ENGINE} build -f=work/Dockerfile.$distro -t beroset/opendss/$distro work >>"${LOGFILE}" 2>&1 )
 )
 
 test_one() (
@@ -40,7 +42,7 @@ test_one() (
         rm -f "${SHARED_DIR}"*
     fi
     cp StevensonPflow-3ph.dss "${SHARED_DIR}"
-    ${CONTAINER_ENGINE} run --rm -v "${SHARED_DIR}":/mnt/host:z "beroset/opendss/${distro}" "/mnt/host/StevensonPflow-3ph.dss" 1>/dev/null 2>&1
+    ${CONTAINER_ENGINE} run --rm -v "${SHARED_DIR}":/mnt/host:z "beroset/opendss/${distro}" "/mnt/host/StevensonPflow-3ph.dss" 1>>${LOGFILE} 2>&1
     if sha512sum -c checksums --status ; then
         echo -e "[${OK}] ${distro}"
     else
@@ -60,11 +62,23 @@ while test $# -gt 0; do
         CONTAINER_ENGINE="podman"
         shift
         ;;
+    --nocache)
+        echo 'Testing with no-cache option'
+        BUILD_OPTS="--no-cache"
+        shift
+        ;;
+    --logfile)
+        LOGFILE="$2"
+        echo "Testing with logfile = ${LOGFILE}"
+        shift 2
+        ;;
      --h | --he | --hel | --help)
         echo $"Usage: testall.sh [OPTION]
         --help              print this help and exit
         --podman            use Podman as the container engine
         --docker            use Docker as the container engine
+        --nocache           build without using existing cached images
+        --logfile log       log details to log file
 "
         exit 0
         ;;
@@ -83,9 +97,10 @@ while test $# -gt 0; do
 done
 
 for distro in ${DISTROLIST}; do
-    build_one "${distro}"
+    if (build_one "${distro}" "${BUILD_OPTS}") ; then
+        test_one "${distro}" 
+    else
+        echo -e "[${BAD}] ${distro} failed to build"
+    fi
 done
 
-for distro in ${DISTROLIST}; do
-    test_one "${distro}" 
-done
