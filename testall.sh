@@ -6,14 +6,12 @@
 #
 #    Build time for alpine: 225.998
 #    Build time for arch: 174.521
-#    Build time for centos: 359.120
 #    Build time for debian: 12.693
 #    Build time for fedora: 289.985
 #    Build time for opensuse: 232.167
 #    Build time for ubuntu: 8.336
 #    [OK] alpine
 #    [OK] arch
-#    [OK] centos
 #    [OK] debian
 #    [OK] fedora
 #    [OK] opensuse
@@ -21,7 +19,7 @@
 # 
 CONTAINER_ENGINE="podman"
 BUILD_OPTS=
-DISTROLIST="alpine arch centos debian fedora opensuse ubuntu"
+DISTROLIST="alpine arch debian fedora opensuse ubuntu"
 OK="\e[0;32mOK\e[m"
 BAD="\e[0;31mFailed!\e[m"
 LOGFILE="/dev/null"
