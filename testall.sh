@@ -5,16 +5,16 @@
 # The output should look something like this:
 #
 #    Build time for alpine: 225.998
-#    Build time for arch: 174.521
-#    Build time for debian: 12.693
-#    Build time for fedora: 289.985
-#    Build time for opensuse: 232.167
-#    Build time for ubuntu: 8.336
 #    [OK] alpine
+#    Build time for arch: 174.521
 #    [OK] arch
+#    Build time for debian: 12.693
 #    [OK] debian
+#    Build time for fedora: 289.985
 #    [OK] fedora
+#    Build time for opensuse: 232.167
 #    [OK] opensuse
+#    Build time for ubuntu: 8.336
 #    [OK] ubuntu
 # 
 CONTAINER_ENGINE="podman"

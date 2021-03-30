@@ -28,13 +28,12 @@ It is possible build for container images based on many different distributions.
 If everything goes successfully, the result will be a `beroset/opendss` container image.  Running `podman images` should verify that the `beroset/opendss` image has indeed been created.
 
 ## Different distributions
-The code currently supports Fedora, Debian, Ubuntu, Arch, CentOS, OpenSUSE and Alpine distribution containers.
+The code currently supports Fedora, Debian, Ubuntu, Arch, OpenSUSE and Alpine distribution containers.
 
 |base   | image size (MB) | build command | notes                 |
 | ----- | ---------- | ------------- | --------------------- |
 |Alpine | 12.3 | podman build -f=work/Dockerfile.alpine work | no issues |
 |Arch   | 427 | podman build -f=work/Dockerfile.arch work | no issues |
-|CentOS | 214 | podman build -f=work/Dockerfile.centos work | no issues |
 |Debian | 86.8 | podman build -f=work/Dockerfile.debian work | no issues |
 |Fedora | 185 | podman build -f=work/Dockerfile.fedora work | no issues |
 |openSUSE | 112 | podman build -f=work/Dockerfile.opensuse work | no issues |
@@ -92,5 +91,7 @@ An overall test suite has been included within the project.  It is in the bash s
             --help              print this help and exit
             --podman            use Podman as the container engine
             --docker            use Docker as the container engine
+            --nocache           build without using existing cached images
+            --logfile log       log details to log file
 
-As shown above, the `testall.sh` program takes a single option to specify which container engine is used.  If no options are specified, Podman is used by default.
+As shown above, the `testall.sh` program takes an option to specify which container engine is used.  It also has options for building without using the existing cached images and for logging all build steps to a log file.  If no options are specified, Podman is used by default, using cached images and without a log file.
