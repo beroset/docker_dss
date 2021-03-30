@@ -1,5 +1,8 @@
 FROM opensuse/leap:15.2 AS builder
 
+ENV CMAKE_VERSION="3.19" \
+    CMAKE_BUILD="7"
+
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
 WORKDIR /tmp/
@@ -7,8 +10,14 @@ ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p epri
 RUN zypper --non-interactive refresh && \
-    zypper --non-interactive install -y gcc gcc-c++ fpc subversion make git cmake
+    zypper --non-interactive install -y gcc gcc-c++ fpc subversion make git wget tar gzip openssl-devel
 RUN git clone https://github.com/pnnl/linenoise-ng.git
+RUN wget https://cmake.org/files/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.${CMAKE_BUILD}.tar.gz && \
+    tar -xzvf cmake-${CMAKE_VERSION}.${CMAKE_BUILD}.tar.gz && \
+    cd cmake-${CMAKE_VERSION}.${CMAKE_BUILD}/ && \
+    ./bootstrap && \
+    make && \
+    make install
 RUN svn checkout https://svn.code.sf.net/p/klusolve/code/ KLUSolve
 RUN svn checkout https://svn.code.sf.net/p/electricdss/code/trunk/Version7/Source epri/electric-dss
 
