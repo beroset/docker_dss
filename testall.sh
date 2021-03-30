@@ -28,7 +28,7 @@ build_one() (
     local distro="${1}"
     TIMEFORMAT='%R'
     printf $"Build time for %s: " "${distro}" 
-    $(time ${CONTAINER_ENGINE} build -f=work/Dockerfile.$distro -t beroset/opendss/$distro work >>"${LOGFILE}" 2>&1 )
+    $(time ${CONTAINER_ENGINE} build ${BUILD_OPTS}  -f=work/Dockerfile.$distro -t beroset/opendss/$distro work >>"${LOGFILE}" 2>&1 )
 )
 
 test_one() (
