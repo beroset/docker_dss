@@ -1,4 +1,4 @@
-FROM alpine:3.13.3 AS builder
+FROM alpine:3.16.2 AS builder
 
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
@@ -27,7 +27,7 @@ WORKDIR /tmp/
 
 RUN make
 
-FROM alpine:3.13.3
+FROM alpine:3.16.2
 WORKDIR /root/
 RUN mkdir -p /root/Documents/OpenDSSCmd
 RUN apk --no-cache add libc6-compat libstdc++
