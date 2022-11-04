@@ -91,7 +91,8 @@ An overall test suite has been included within the project.  It is in the bash s
             --help              print this help and exit
             --podman            use Podman as the container engine
             --docker            use Docker as the container engine
+            --distro dist       only test the specified distro
             --nocache           build without using existing cached images
             --logfile log       log details to log file
 
-As shown above, the `testall.sh` program takes an option to specify which container engine is used.  It also has options for building without using the existing cached images and for logging all build steps to a log file.  If no options are specified, Podman is used by default, using cached images and without a log file.
+As shown above, the `testall.sh` program takes an option to specify which container engine is used.  It also has options for building without using the existing cached images, for logging all build steps to a log file and for selecting just a single distro to use instead of all of them.  If no options are specified, Podman is used by default, using cached images and without a log file.
