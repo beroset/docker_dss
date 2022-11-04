@@ -32,12 +32,12 @@ The code currently supports Fedora, Debian, Ubuntu, Arch, OpenSUSE and Alpine di
 
 |base   | image size (MB) | build command | notes                 |
 | ----- | ---------- | ------------- | --------------------- |
-|Alpine | 12.3 | podman build -f=work/Dockerfile.alpine work | no issues |
-|Arch   | 427 | podman build -f=work/Dockerfile.arch work | no issues |
-|Debian | 86.8 | podman build -f=work/Dockerfile.debian work | no issues |
-|Fedora | 185 | podman build -f=work/Dockerfile.fedora work | no issues |
+|Alpine | 12.6 | podman build -f=work/Dockerfile.alpine work | no issues |
+|Arch   | 432 | podman build -f=work/Dockerfile.arch work | no issues |
+|Debian | 87.9 | podman build -f=work/Dockerfile.debian work | no issues |
+|Fedora | 163 | podman build -f=work/Dockerfile.fedora work | no issues |
 |openSUSE | 112 | podman build -f=work/Dockerfile.opensuse work | no issues |
-|Ubuntu | 79.3 | podman build -f=work/Dockerfile.ubuntu work | no issues |
+|Ubuntu | 79.4 | podman build -f=work/Dockerfile.ubuntu work | no issues |
 
 ## Using OpenDSS in a container image
 To run OpenDSS in a container image requires only the previously created `beroset/opendss` image.  Because OpenDSS takes files as input and (often) creates files as output, we need to share a *volume* with the container to allow this, since ordinarily, the container image has no interaction with the host system's storage.  To do this, we can use a simple `bash` script:
