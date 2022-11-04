@@ -70,11 +70,17 @@ while test $# -gt 0; do
         echo "Testing with logfile = ${LOGFILE}"
         shift 2
         ;;
+    --distro)
+        DISTROLIST="$2"
+        echo "Testing only ${DISTROLIST}"
+        shift 2
+        ;;
      --h | --he | --hel | --help)
         echo $"Usage: testall.sh [OPTION]
         --help              print this help and exit
         --podman            use Podman as the container engine
         --docker            use Docker as the container engine
+        --distro dist       only test the specified distro
         --nocache           build without using existing cached images
         --logfile log       log details to log file
 "
