@@ -1,4 +1,4 @@
-FROM archlinux:base-20210328.0.18194 AS builder
+FROM archlinux:base-20221030.0.98412 AS builder
 
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
@@ -6,8 +6,7 @@ WORKDIR /tmp/
 ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p epri
-RUN pacman --noconfirm -Syu && \
-        pacman --noconfirm -S svn git make cmake gcc fpc
+RUN pacman --noconfirm -Sy svn git make cmake gcc fpc
 RUN git clone https://github.com/pnnl/linenoise-ng.git
 RUN svn checkout https://svn.code.sf.net/p/klusolve/code/ KLUSolve
 RUN svn checkout https://svn.code.sf.net/p/electricdss/code/trunk/Version7/Source epri/electric-dss
@@ -19,7 +18,7 @@ RUN cd epri/electric-dss && \
 COPY Makefile Makefile
 RUN make
 
-FROM archlinux:base-20210328.0.18194
+FROM archlinux:base-20221030.0.98412
 WORKDIR /root/
 RUN mkdir -p /root/Documents/OpenDSSCmd
 COPY --from=builder /tmp/opendsscmd /bin/opendsscmd
