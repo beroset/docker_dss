@@ -1,8 +1,8 @@
-FROM alpine:3.16.2 AS builder
+FROM alpine:3.18.4 AS builder
 
 LABEL maintainer="Ed Beroset <beroset@ieee.org>"
 
-ENV FPC_VERSION="3.2.0" \
+ENV FPC_VERSION="3.2.2" \
     FPC_ARCH="x86_64-linux"
 
 WORKDIR /tmp/
@@ -10,24 +10,21 @@ ENV TZ=America/New_York
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN mkdir -p epri && \
     apk --no-cache add cmake make make g++ git subversion libc6-compat
-RUN wget "ftp://ftp.hu.freepascal.org/pub/fpc/dist/${FPC_VERSION}/${FPC_ARCH}/fpc-${FPC_VERSION}-${FPC_ARCH}.tar" -O fpc.tar
+RUN wget "http://downloads.freepascal.org/fpc/dist/${FPC_VERSION}/${FPC_ARCH}/fpc-${FPC_VERSION}.${FPC_ARCH}.tar" -O fpc.tar
 RUN tar xf "fpc.tar"
-WORKDIR "fpc-${FPC_VERSION}-${FPC_ARCH}"
+WORKDIR "fpc-${FPC_VERSION}.${FPC_ARCH}"
 RUN echo -e '/usr\nN\nN\nN\n' | sh ./install.sh 
 WORKDIR /tmp/
 RUN svn checkout https://svn.code.sf.net/p/klusolve/code/ KLUSolve
 RUN git clone https://github.com/pnnl/linenoise-ng.git
-RUN export LC_CTYPE=en_US.UTF8 && svn checkout https://svn.code.sf.net/p/electricdss/code/trunk/Version7/Source epri/electric-dss
+RUN export LC_CTYPE=en_US.UTF8 && svn checkout https://svn.code.sf.net/p/electricdss/code/trunk/Version8/Source epri/electric-dss
 
-#COPY remove_obsolete_agent_calls.diff .
 COPY Makefile Makefile
-WORKDIR /tmp/epri/electric-dss
-#RUN svn patch --non-interactive /tmp/remove_obsolete_agent_calls.diff
 WORKDIR /tmp/
 
 RUN make
 
-FROM alpine:3.16.2
+FROM alpine:3.18.4
 WORKDIR /root/
 RUN mkdir -p /root/Documents/OpenDSSCmd
 RUN apk --no-cache add libc6-compat libstdc++

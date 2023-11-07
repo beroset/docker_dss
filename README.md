@@ -32,12 +32,12 @@ The code currently supports Fedora, Debian, Ubuntu, Arch, OpenSUSE and Alpine di
 
 |base   | image size (MB) | build command | notes                 |
 | ----- | ---------- | ------------- | --------------------- |
-|Alpine | 12.6 | podman build -f=work/Dockerfile.alpine work | no issues |
-|Arch   | 432 | podman build -f=work/Dockerfile.arch work | no issues |
-|Debian | 87.9 | podman build -f=work/Dockerfile.debian work | no issues |
-|Fedora | 163 | podman build -f=work/Dockerfile.fedora work | no issues |
-|openSUSE | 112 | podman build -f=work/Dockerfile.opensuse work | no issues |
-|Ubuntu | 79.4 | podman build -f=work/Dockerfile.ubuntu work | no issues |
+|Alpine | 15.6 | podman build -f=work/Dockerfile.alpine work | no issues |
+|Arch   | 449 | podman build -f=work/Dockerfile.arch work | no issues |
+|Debian | 82.7 | podman build -f=work/Dockerfile.debian work | no issues |
+|Fedora | 187 | podman build -f=work/Dockerfile.fedora work | no issues |
+|openSUSE | 123 | podman build -f=work/Dockerfile.opensuse work | no issues |
+|Ubuntu | 85.2 | podman build -f=work/Dockerfile.ubuntu work | no issues |
 
 ## Using OpenDSS in a container image
 To run OpenDSS in a container image requires only the previously created `beroset/opendss` image.  Because OpenDSS takes files as input and (often) creates files as output, we need to share a *volume* with the container to allow this, since ordinarily, the container image has no interaction with the host system's storage.  To do this, we can use a simple `bash` script:
@@ -85,7 +85,7 @@ As before, the `shared` subdirectory under the host's (your *real* computer's) c
 For convenience, this is also put into a shell script `tryme.sh`.
 
 ## Testing
-An overall test suite has been included within the project.  It is in the bash script `testall.sh`.  With a single command, all containers can be built and sanity-tested.  Be aware, however, that this requires an internet connection and may take considerable time - on a 3.4GHz i7 with gigabit fiber internet connection, the full test suite takes over 36 minutes to complete.
+An overall test suite has been included within the project.  It is in the bash script `testall.sh`.  With a single command, all containers can be built and sanity-tested.  Be aware, however, that this requires an internet connection and may take considerable time - on a 3.4GHz i7 with gigabit fiber internet connection, the full test suite takes about 23 minutes to complete.
 
     Usage: testall.sh [OPTION]
             --help              print this help and exit

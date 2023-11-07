@@ -14,11 +14,10 @@ epri/electric-dss/CMD/test/opendsscmd : KLUSolve/Lib/libklusolve.a linenoise-ng/
 	cd epri/electric-dss/CMD && fpc @linuxopts.cfg -k-L"$(STATIC_LIBDIR)" "$(FPC_EXTRA)" opendsscmd.lpr
 
 linenoise-ng/build/liblinenoise.so : linenoise-ng/build/Makefile
-	cd linenoise-ng/build && make 
+	cd linenoise-ng && cmake --build build
 
 linenoise-ng/build/Makefile : linenoise-ng/CMakeLists.txt
-	mkdir -p linenoise-ng/build
-	cd linenoise-ng/build && cmake -DCMAKE_BUILD_TYPE=Release ..
+	cd linenoise-ng && cmake -DCMAKE_BUILD_TYPE=Release -S . -B build
 
 KLUSolve/Lib/libklusolve.a: KLUSolve/Makefile
 	mkdir -p KLUSolve/Lib
